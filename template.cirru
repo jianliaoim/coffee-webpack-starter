@@ -1,13 +1,16 @@
 
 var
   stir $ require :stir-template
+  React $ require :react
 
 var
-  (object~ html head title body meta script link div a span) stir
+  Page $ React.createFactory $ require :./src/page
 
 var
-  line $ \ (text)
-    return $ div null text
+  ({}~ html head title body meta script link div a span) stir
+
+var
+  line $ \ (text) (div ({} (:className :line)) text)
 
 = module.exports $ \ (data)
   return $ stir.render
@@ -18,22 +21,19 @@ var
         meta $ object (:charset :utf-8)
         link $ object (:rel :icon)
           :href :http://tp4.sinaimg.cn/5592259015/180/5725970590/1
-        link $ object (:rel :stylesheet)
-          :href :src/main.css
+        link $ {} (:rel :stylesheet)
+          :href $ cond data.dev :src/main.css data.style
         script $ object (:src data.vendor) (:defer true)
         script $ object (:src data.main) (:defer true)
       body null
-        div
-          object (:class :intro)
-          div
-            object (:class :title)
-            , ":This is a demo of Webpack usage."
+        div ({} (:class :intro))
+          div ({} (:class :title)) ":This is a demo of Webpack usage."
           line ":Open Console to see how it loads."
           div null
             span null ":Read more at "
             a
-              object (:href :http://github.com/teambition/coffee-webpack-starter)
+              {} (:href :http://github.com/teambition/coffee-webpack-starter)
               , :github.com/teambition/coffee-webpack-starter
             span null :.
-        div
-          object (:class :demo)
+        div ({} (:class :demo))
+          React.renderToString (Page)

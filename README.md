@@ -4,7 +4,7 @@ CoffeeScript Webpack Starter
 
 React project tempate at Talk.
 
-Demo http://ui.talk.ai/<project-name>
+Demo http://ui.talk.ai/coffee-webpack-starter
 
 ### Usage
 

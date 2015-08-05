@@ -18,10 +18,10 @@ gulp.task 'rsync', (cb) ->
   wrapper = require 'rsyncwrapper'
   wrapper.rsync
     ssh: true
-    src: ['index.html', 'build']
+    src: ['index.html', 'build', 'src']
     recursive: true
     args: ['--verbose']
-    dest: 'talk-ui:/teambition/server/talk-ui/react-lite-dropdown'
+    dest: 'talk-ui:/teambition/server/talk-ui/coffee-webpack-starter'
     deleteAll: true
   , (error, stdout, stderr, cmd) ->
     if error?
@@ -37,8 +37,9 @@ gulp.task 'html', (cb) ->
   assets = undefined
   unless env.dev
     assets = require('./build/assets.json')
-    env.main = './build/' + assets.main
+    env.main = './build/' + assets.main[0]
     env.vendor = './build/' + assets.vendor
+    env.style = './build/' + assets.main[1]
 
   fs.writeFile 'index.html', html(env), cb
 
