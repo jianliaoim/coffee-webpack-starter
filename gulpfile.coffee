@@ -31,8 +31,7 @@ gulp.task 'rsync', (cb) ->
     cb()
 
 gulp.task 'html', (cb) ->
-  require('cirru-script/lib/register')
-  html = require('./template.cirru')
+  html = require('./template')
   fs = require('fs')
   assets = undefined
   unless env.dev
