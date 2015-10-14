@@ -4,6 +4,8 @@ config = require('./webpack.config')
 fs = require('fs')
 ExtractTextPlugin = require 'extract-text-webpack-plugin'
 
+fontName = 'fonts/[name].[ext]'
+
 module.exports =
   entry:
     vendor: []
@@ -13,7 +15,13 @@ module.exports =
     filename: '[name].[chunkhash:8].js'
     publicPath: './build/'
   resolve: config.resolve
-  module: config.module
+  module:
+    loaders: [
+      {test: /\.coffee$/, loader: 'coffee'}
+      {test: /\.less$/, loader: 'style!css!less'}
+      {test: /\.css$/, loader: ExtractTextPlugin.extract('style-loader', 'css!autoprefixer')}
+      {test: /\.(eot|woff|woff2|ttf|svg)((\?|\#)[\?\#\w\d_-]+)?$/, loader: "url", query: {limit: 100, name: fontName}}
+    ]
   plugins: [
     new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.[chunkhash:8].js')
     new (webpack.optimize.UglifyJsPlugin)(sourceMap: false)
