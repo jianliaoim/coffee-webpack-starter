@@ -1,20 +1,27 @@
 
-webpack = require('webpack')
-config = require('./webpack.config')
 fs = require('fs')
+path = require 'path'
+webpack = require('webpack')
+SkipPlugin = require 'skip-webpack-plugin'
 ExtractTextPlugin = require 'extract-text-webpack-plugin'
+
+webpackDev = require('./webpack-dev')
 
 fontName = 'fonts/[name].[ext]'
 
-module.exports =
+module.exports = (info) ->
+  webpackConfig = webpackDev info
+  publicPath = ''
+
+  # return
   entry:
     vendor: []
-    main: ['./src/main', './src/main.css']
+    main: ['./src/main']
   output:
-    path: 'build/'
+    path: path.join info.__dirname, 'build/'
     filename: '[name].[chunkhash:8].js'
-    publicPath: './build/'
-  resolve: config.resolve
+    publicPath: publicPath
+  resolve: webpackConfig.resolve
   module:
     loaders: [
       {test: /\.coffee$/, loader: 'coffee'}
@@ -24,10 +31,9 @@ module.exports =
     ]
   plugins: [
     new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.[chunkhash:8].js')
-    new (webpack.optimize.UglifyJsPlugin)(sourceMap: false)
+    if info.isMinified
+      new webpack.optimize.UglifyJsPlugin(compress: {warnings: false}, sourceMap: false)
+    else
+      new SkipPlugin info: 'UglifyJsPlugin skipped'
     new ExtractTextPlugin("style.[chunkhash:8].css")
-    ->
-      @plugin 'done', (stats) ->
-        content = JSON.stringify(stats.toJson().assetsByChunkName, null, 2)
-        fs.writeFileSync 'build/assets.json', content
   ]

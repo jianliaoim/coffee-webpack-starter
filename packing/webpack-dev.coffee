@@ -1,12 +1,15 @@
 
 fs = require('fs')
-fontName = 'fonts/[name].[ext]'
+path = require 'path'
+config = require 'config'
 webpack = require 'webpack'
 
-module.exports =
+fontName = 'fonts/[name].[ext]'
+
+module.exports = (info) ->
   entry:
     vendor: [
-      'webpack-dev-server/client?http://0.0.0.0:8080'
+      "webpack-dev-server/client?http://localhost:#{config.webpackDevPort}"
       'webpack/hot/dev-server'
       'react'
     ]
@@ -14,9 +17,9 @@ module.exports =
       './src/main'
     ]
   output:
-    path: 'build/'
+    path: path.join info.__dirname, 'build'
     filename: '[name].js'
-    publicPath: 'http://localhost:8080/build/'
+    publicPath: "http://localhost:#{config.webpackDevPort}/"
   resolve: extensions: ['.js', '.coffee', '']
   module:
     loaders: [
@@ -27,4 +30,5 @@ module.exports =
     ]
   plugins: [
     new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.js')
+    new webpack.HotModuleReplacementPlugin()
   ]
